@@ -1,13 +1,13 @@
 <template>
   <div class="home">
-     여기는 리뷰 보기(=메인페이지)입니다
+     여기는 리뷰 쓰기 페이지입니다.
   </div>
 </template>
 
 <script>
  
 export default {
-  name: 'HomeView',
+  name: 'WriteView',
    
 }
 </script>
