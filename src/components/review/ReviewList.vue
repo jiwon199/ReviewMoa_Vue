@@ -1,7 +1,18 @@
 <template>
   <div class="home">
     리뷰 목록
-    <review-item />
+     
+    <b-card-group  class="listBox"> 
+      <div v-for="(item, index) in reviewList" :key="index" :item="item"> 
+      <review-item :itemIdx = "index"  class="item" />  
+      </div>
+    </b-card-group>  
+    <!--
+    <b-card-group>
+      <review-item :itemIdx = "0"  /> 
+      <review-item :itemIdx = "1"  />   
+    </b-card-group> -->
+     
   </div>
 </template>
 
@@ -15,6 +26,12 @@ export default {
   components: {
     ReviewItem,
   },
+  data() {
+    return {
+      itemIdx : "",
+      reviewList:[],
+    }
+  },
   created() {
     this.getList();
   },
@@ -24,7 +41,9 @@ export default {
       axios
         .get(process.env.VUE_APP_ROOT_URL+"/board/list")
         .then((response) => {
-          this.SET_REVIEW_LIST(response.data);
+          this.reviewList=response.data;
+          this.SET_REVIEW_LIST(this.reviewList);
+           
         })
         .catch((error) => {
           console.dir(error);
@@ -33,3 +52,15 @@ export default {
   },
 };
 </script>
+<style scoped>
+ 
+.listBox{
+    
+   margin-right:6em;   
+   margin-left:6em;  
+}
+.item{
+   margin:0.5em;
+   
+}
+</style>
