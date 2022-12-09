@@ -4,7 +4,8 @@
       <li><router-link to="/" class="link" id="logo">리뷰 모아</router-link></li>
       <li><router-link to="/" class="link">리뷰 보기</router-link></li>
       <li><router-link to="/write" class="link">리뷰 쓰기</router-link></li>
-      <!-- <li><router-link to="" class="link">회원 관련</router-link></li> --> <!--자유롭게 구성하기 -->
+      <li><router-link :to="{name:'regist'}" class="link">회원 가입</router-link></li> 
+      <!-- <li><router-link to="" class="link">로그인</router-link></li> -->
     </ul>
   </nav>
 </template>
