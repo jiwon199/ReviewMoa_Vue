@@ -20,12 +20,12 @@ const routes = [
   {
     path: '/user',
     name: 'user',
-    componenet: AppUser,
+    component: AppUser,
     children: [
       {
-        path: '/regist',
+        path: 'regist',
         name: 'regist',
-        componenet: UserRegist,
+        component: UserRegist,
       },
     ],
   },
