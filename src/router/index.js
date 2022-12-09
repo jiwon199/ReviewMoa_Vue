@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import WriteView from '../views/WriteView.vue'
+import UpdateView from '../views/UpdateView.vue'
+import DetailView from '../views/DetailView.vue'
 import AppUser from '../views/AppUser.vue'
 import UserRegist from '../components/user/UserRegist'
 Vue.use(VueRouter)
@@ -16,6 +18,16 @@ const routes = [
     path: '/write',
     name: 'write',
     component: WriteView
+  },
+  {
+    path: '/detail',
+    name: 'detail',
+    component: DetailView
+  },
+  {
+    path: '/update',
+    name: 'update',
+    component: UpdateView
   },
   {
     path: '/user',
