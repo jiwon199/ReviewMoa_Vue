@@ -4,7 +4,7 @@
      
     <b-card-group  class="listBox"> 
       <div v-for="(item, index) in reviewList" :key="index" :item="item"> 
-      <review-item :itemIdx = "index"  class="item" />  
+      <review-item :itemIdx = "index"  class="item"  />  
       </div>
     </b-card-group>  
     <!--
@@ -37,6 +37,7 @@ export default {
   },
   methods: {
      ...mapMutations(reviewStore,["SET_REVIEW_LIST"]),
+    ...mapMutations(reviewStore,["SET_SELECT_IDX"]),
     getList() {
       axios
         .get(process.env.VUE_APP_ROOT_URL+"/board/list")
@@ -49,6 +50,7 @@ export default {
           console.dir(error);
         });
     },
+     
   },
 };
 </script>
