@@ -25,6 +25,7 @@
 
 <script>
 import { mapState } from "vuex";
+ 
 const reviewStore = "reviewStore";
 export default {
   name: 'ReviewItem',
