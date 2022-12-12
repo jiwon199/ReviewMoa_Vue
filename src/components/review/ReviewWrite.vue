@@ -24,9 +24,17 @@
       id="content"
     ></div>
 
-     
-    <b-button variant="outline-secondary" class="submitBtn" size="lg" @click="submit">작성하기</b-button>
-    <b-button variant="outline-secondary" class="submitBtn" size="lg" >이미지 추가</b-button>
+    <input type="file" accept="image/*" />
+    <b-button
+      variant="outline-secondary"
+      class="submitBtn"
+      size="lg"
+      @click="submit"
+      >작성하기</b-button
+    >
+    <b-button variant="outline-secondary" class="submitBtn" size="lg"
+      >이미지 추가</b-button
+    >
   </div>
 </template>
 
@@ -44,23 +52,22 @@ export default {
   },
 
   methods: {
-    submit(){
-        if(this.isValid()){
-            var content=document.getElementById('content').innerHTML;
-            console.log(content);
-        }
-        else{
-            alert("모든 정보를 입력하세요.");
-        }
-         
+    submit() {
+      if (this.isValid()) {
+        var content = document.getElementById("content").innerHTML;
+        console.log(content);
+      } else {
+        alert("모든 정보를 입력하세요.");
+      }
     },
-    isValid(){
-        //나중에 바꾸기
-        if(this.postTitle==""||this.movieTitle==""||this.genre==""){
-            return true;
-        }
+    isValid() {
+      //나중에 바꾸기
+      if (this.postTitle == "" || this.movieTitle == "" || this.genre == "") {
         return true;
-    }
+      }
+      return true;
+    },
+     
   },
 };
 </script>
@@ -87,7 +94,7 @@ export default {
 }
 .submitBtn {
   margin-top: 0.5em;
-  margin-left:0.5em;
+  margin-left: 0.5em;
   float: right;
   font-size: 1.5em;
   color: sandybrown !important;
