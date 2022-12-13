@@ -4,22 +4,22 @@
       <b-col>
         <b-card>
         <b-form >
-      <b-form-group label="아이디 : " label-for="userid">
-        <b-form-input id="userid" type="text" v-model="user.userid" required placeholder="id 입력" @blur="checkDuplication"></b-form-input>
+      <b-form-group label="아이디 : " label-for="userId">
+        <b-form-input id="userId" type="text" v-model="user.userId" required placeholder="id 입력" @blur="checkDuplication"></b-form-input>
       </b-form-group>
-      <b-form-group label="비밀번호 : " label-for="userpwd" >
-        <b-form-input id="userpwd" type="password" v-model="user.userpwd" required placeholder="비밀번호 입력" ></b-form-input>
+      <b-form-group label="비밀번호 : " label-for="userPwd" >
+        <b-form-input id="userPwd" type="password" v-model="user.userPwd" required placeholder="비밀번호 입력" ></b-form-input>
       </b-form-group>
-      <b-form-group label="이름 : " label-for="username" >
+      <b-form-group label="이름 : " label-for="userName" >
         <!-- class="form-inline" -->
         <!-- 나중에 별명도 추가 가능 -->
-        <b-form-input id="username" type="text" v-model ="user.username" required placeholder="이름 입력" ></b-form-input>
+        <b-form-input id="userName" type="text" v-model ="user.userName" required placeholder="이름 입력" ></b-form-input>
       </b-form-group>
-      <b-form-group label="생년월일 : " label-for="userbirth" >
-        <b-form-input id="userbirth" type="text" v-model="user.userbirth" required placeholder="생년월일 8자" ></b-form-input>
+      <b-form-group label="생년월일 : " label-for="userBirth" >
+        <b-form-input id="userBirth" type="text" v-model="user.userBirth" required placeholder="생년월일 8자" ></b-form-input>
       </b-form-group>
-      <b-form-group label="성별 : " label-for="usergender" >
-        <b-form-input id="usergender" type="text" v-model="user.usergender" required placeholder="성별 입력" ></b-form-input>
+      <b-form-group label="성별 : " label-for="userGender" >
+        <b-form-input id="userGender" type="text" v-model="user.userGender" required placeholder="성별 입력" ></b-form-input>
         <!-- type 선택버튼으로 변경해보기 -->
       </b-form-group>
       <b-button type="button" @click="signup">회원등록</b-button>
@@ -37,11 +37,11 @@
     data() {
       return {
         user:{
-          userid:"",
-          userpwd:"",
-          username:"",
-          userbirth:"",
-          usergender:"",
+          userId:"",
+          userPwd:"",
+          userName:"",
+          userBirth:"",
+          userGender:"",
         }
       }
     },
@@ -50,29 +50,29 @@
         alert("check");
       },
       signup(){
-        const userid=this.user.userid;
-        const userpwd=this.user.userpwd;
-        const username=this.user.username;
-        const userbirth=this.user.userbirth;
-        const usergender=this.user.usergender;
+        const userId=this.user.userId;
+        const userPwd=this.user.userPwd;
+        const userName=this.user.userName;
+        const userBirth=this.user.userBirth;
+        const userGender=this.user.userGender;
 
         // 왜 check만 뜨는가
-        if(!userid){
+        if(!userId){
           alert("id check");
-        }else if(!userpwd){
-          console.log(userid);
+        }else if(!userPwd){
+          console.log(userId);
           alert("password check");
-        }else if(!username){
-          console.log(userpwd);
+        }else if(!userName){
+          console.log(userPwd);
           alert("name check");
-        }else if(!userbirth){
-          console.log(username);
+        }else if(!userBirth){
+          console.log(userName);
           alert("birth check");
-        }else if(!usergender){
-          console.log(userbirth);
+        }else if(!userGender){
+          console.log(userBirth);
           alert("gender check");
         }else{
-          console.log(usergender);
+          console.log(userGender);
         }
       }
     }
