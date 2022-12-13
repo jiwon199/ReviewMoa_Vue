@@ -1,0 +1,201 @@
+<template>
+  <div class="writeArea">
+    <b-form-input
+      v-model="postTitle"
+      placeholder="게시글 제목을 입력하세요."
+      id="titleInput"
+    ></b-form-input>
+    <b-form-input
+      v-model="movieTitle"
+      placeholder="영화 이름을 입력하세요."
+      id="titleInput"
+      style="width: 50%"
+    ></b-form-input>
+    <b-form-select v-model="genre" :options="genres" id="genreInput">
+      <b-form-select-option value="" disabled selected hidden>
+        <span style="color: yellow">장르를 선택하세요.</span>
+      </b-form-select-option>
+    </b-form-select>
+
+    <!-- 컨텐츠-->
+    <div
+      class="contentInput"
+      contentEditable="true"
+      placeholder="내용을 입력하세요."
+      id="content"
+    ></div>
+
+    <b-button
+      variant="outline-secondary"
+      class="submitBtn"
+      size="lg"
+      @click="submit"
+      >작성하기</b-button
+    >
+    <!-- 이미지 추가 버튼 -->
+    <label
+      className="input-file-button"
+      for="chooseFile"
+      class="submitBtn"
+      id="fileLabel"
+    >
+      사진 업로드
+    </label>
+    <input
+      type="file"
+      ref="image"
+      accept="image/*"
+      id="chooseFile"
+      name="chooseFile"
+      class="submitBtn"
+      @change="uploadImg()"
+      style="display: none"
+    />
+  </div>
+</template>
+
+<script>
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { initializeApp } from "firebase/app";
+const firebaseConfig = {
+  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
+  authDomain: process.env.VUE_APP_AUTH_DOMAIN,
+  projectId: process.env.VUE_APP_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_MESSAGING_SENDER_ID,
+  appId: process.env.VUE_APP_APP_ID,
+};
+initializeApp(firebaseConfig);
+const storage = getStorage();
+export default {
+  name: "ReviewWrite",
+
+  data() {
+    return {
+      postTitle: "",
+      movieTitle: "",
+      genre: "",
+      genres: ["sf", "판타지", "로맨스"],
+    };
+  },
+
+  methods: {
+    submit() {
+      if (this.isValid()) {
+        var content = document.getElementById("content").innerHTML;
+        console.log(content);
+      } else {
+        alert("모든 정보를 입력하세요.");
+      }
+    },
+    isValid() {
+      //나중에 바꾸기
+      if (this.postTitle == "" || this.movieTitle == "" || this.genre == "") {
+        return true;
+      }
+      return true;
+    },
+
+    //파이어베이스 스토리지에 이미지를 업로드
+    uploadImg() {
+      var image = this.$refs["image"].files[0];
+      const uploadStorage = ref(storage, "board/" + image.name);
+      uploadBytes(uploadStorage, image)
+        .then(() => {
+          console.log("Uploaded a blob or file!");
+          this.createImg(image);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    //이미지 링크를 다운로드하고 태그 삽입
+    createImg(image) {
+      //그 링크를 저장
+      getDownloadURL(ref(storage, "board/" + image.name))
+        .then((url) => {
+          this.makeHtmlImg(url);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    //이미지 태그를 생성
+    makeHtmlImg(url) {
+      let tagArea = document.getElementById("content");
+      let new_pTag = document.createElement("img");
+      new_pTag.setAttribute("src", url);
+      tagArea.appendChild(new_pTag);
+    },
+  },
+};
+</script>
+<style scope>
+.writeArea {
+  width: 60vw;
+  margin: 0 auto;
+  margin-top: 3em;
+}
+.contentInput {
+  font-size: 20px;
+  margin-top: 0.5em;
+  height: 50vh;
+  border: 1px solid lightgray;
+  padding: 10px;
+  overflow: auto;
+}
+.contentInput:focus {
+  outline: none;
+}
+.contentInput[placeholder]:empty:before {
+  content: attr(placeholder);
+  color: #555;
+}
+.submitBtn {
+  margin-top: 0.5em;
+  margin-left: 0.5em;
+  float: right;
+  font-size: 1.5em;
+  color: sandybrown !important;
+  border: 1px solid sandybrown !important;
+}
+.submitBtn:hover {
+  background: sandybrown !important;
+  border: 1px solid sandybrown !important;
+  color: white !important;
+  cursor: pointer;
+}
+#titleInput {
+  font-size: 1.5em;
+  border-radius: 0px;
+  display: inline-block;
+}
+#titleInput:focus {
+  text-decoration: none;
+  outline: none;
+  box-shadow: none;
+}
+#genreInput {
+  font-size: 1.5em;
+  border-radius: 0px;
+  width: 50%;
+  vertical-align: top;
+}
+
+#genreInput:focus {
+  text-decoration: none;
+  outline: none;
+  box-shadow: none;
+}
+#content img {
+  max-width: 100%;
+}
+#fileLabel {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  padding-bottom: 0.4em;
+  padding-top: 0.4em;
+  border-radius: 0.2em;
+  font-size: 1.25em;
+}
+</style>

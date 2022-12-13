@@ -1,13 +1,16 @@
 <template>
   <div class="home">
-     여기는 디테일 페이지입니다.
+     
+     <review-deail/>
   </div>
 </template>
 
 <script>
- 
+import ReviewDeail from '@/components/review/ReviewDetail.vue'
 export default {
   name: 'DetailView',
-   
+  components: {
+    ReviewDeail
+  }
 }
 </script>
