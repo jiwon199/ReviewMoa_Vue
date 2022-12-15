@@ -6,6 +6,7 @@
     style="max-width: 20rem; border:1px solid lightgray;"
     :img-src="reviewList[itemIdx]?.thumbnail"
     img-alt="Image"
+    img-height="150"
     img-top
     class="item"
     @click="select"

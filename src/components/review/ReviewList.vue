@@ -7,12 +7,7 @@
       <review-item :itemIdx = "index"  class="item"  />  
       </div>
     </b-card-group>  
-    <!--
-    <b-card-group>
-      <review-item :itemIdx = "0"  /> 
-      <review-item :itemIdx = "1"  />   
-    </b-card-group> -->
-     
+  
   </div>
 </template>
 

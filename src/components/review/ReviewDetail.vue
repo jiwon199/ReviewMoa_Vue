@@ -7,25 +7,22 @@
     <div class="writer">
     작성자:{{reviewList[selectIdx].writer}},
     {{reviewList[selectIdx].registTime}}</div>
+   
+    <!-- 유저가 완성되면 수정 -->
+    <button class="optBtn"  @click="deletePost">삭제</button>
+    <button class="optBtn" >수정</button>
+      
    </div>
 
-   <div class="contentArea">
-    <div v-for="(item, index) in reviewList[selectIdx].contentList" :key="index" :item="item"> 
-       
-       <div v-if="isImage(item)">
-             
-            <img :src = "item.content" class="img"/>
-        </div>
-        <div v-else>{{item.content}}</div>
-      </div>
-    
-    </div>
+  <div class="contentArea">
+   <div v-html="reviewList[selectIdx].content"/>
+   </div>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
- 
+import axios from "axios";
 const reviewStore = "reviewStore";
 export default {
   name: 'ReviewItem',
@@ -34,25 +31,28 @@ export default {
     ...mapState(reviewStore, ["selectIdx"]),
   },
   methods:{
-    isImage(item){
-        if(item.type==0){
-            return false;
-        }
-        else{
-            return true;
-        }
+     deletePost(){
+      axios({
+        method: "post",
+        url: process.env.VUE_APP_ROOT_URL + "/board/delete/"+this.reviewList[this.selectIdx].postId,
         
-    }
+      }).then(() => {
+        //alert("포스트를 작성했습니다.");
+        this.$router.push('/');
+      });
+     }
   }
 }
 </script>
 <style>
+ 
 .content{
   
-  margin-right:15em;   
-  margin-left:15em;  
-  margin-top: 3em;
-  margin-bottom:3em; 
+ width: 60vw;
+  margin: 0 auto;
+}
+.titleArea{
+  margin-top:2em;
 }
 .postTitle{
     font-size: 3em;
@@ -65,15 +65,34 @@ export default {
 }
 .writer{
     font-size:1em; 
+    display: inline;
 }
 .contentArea{
     margin: 5px;
     margin-top:2em;
     font-size:20px;
+    margin-bottom:2em;
+    
+}
+.contentArea img {
+  max-width: 100%;
 }
 .img{
     border:1px solid gray;
     margin-bottom: 1em;
     margin-top:1em;
+    height:10 !important;
+}
+.optBtn{
+  float:right;
+  margin-right:1em;
+  margin-bottom: 1em;
+  background-color: white;
+  border :0px;
+  font-size:1em;
+  
+}
+.optBtn:hover{
+  color:gray;
 }
 </style>
