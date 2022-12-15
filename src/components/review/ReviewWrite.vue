@@ -57,6 +57,7 @@
 <script>
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { initializeApp } from "firebase/app";
+import axios from "axios"
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
   authDomain: process.env.VUE_APP_AUTH_DOMAIN,
@@ -75,31 +76,63 @@ export default {
       postTitle: "",
       movieTitle: "",
       genre: "",
+      thumbnail: "",
       genres: ["sf", "판타지", "로맨스"],
+      timestamp:""
     };
   },
 
   methods: {
     submit() {
-      if (this.isValid()) {
-        var content = document.getElementById("content").innerHTML;
-        console.log(content);
+      var content = document.getElementById("content").innerHTML;
+      if (this.isValid(content)) {
+        //썸네일이 없으면 기본 썸네일로 설정
+        if (this.thumbnail == "") {
+          this.thumbnail =
+            "https://firebasestorage.googleapis.com/v0/b/test-f7f1d.appspot.com/o/board%2F%EB%AF%B8%EB%A6%AC%EB%B3%B4%EA%B8%B0.png?alt=media&token=34f2ccf3-5eac-4af5-87fc-3c8653c12b92";
+        }
+        this.addPost(content);
       } else {
         alert("모든 정보를 입력하세요.");
       }
     },
-    isValid() {
-      //나중에 바꾸기
-      if (this.postTitle == "" || this.movieTitle == "" || this.genre == "") {
-        return true;
+    //모든 칸이 채워졌는지 확인
+    isValid(content) {
+      if (
+        this.postTitle == "" ||
+        this.movieTitle == "" ||
+        this.genre == "" ||
+        content == ""
+      ) {
+        return false;
       }
       return true;
+    },
+    addPost(content) {
+      axios({
+        method: "post",
+        url: process.env.VUE_APP_ROOT_URL + "/board/write",
+        data: {
+          writer: "익명",
+          hit: 0,
+          genre: this.genre,
+          movieTitle: this.movieTitle,
+          postTitle: this.postTitle,
+          thumbnail: this.thumbnail,
+          heart: 0,
+          content: content,
+        },
+      }).then(() => {
+        //alert("포스트를 작성했습니다.");
+        this.$router.push('/');
+      });
     },
 
     //파이어베이스 스토리지에 이미지를 업로드
     uploadImg() {
+      this.timestamp=new Date();
       var image = this.$refs["image"].files[0];
-      const uploadStorage = ref(storage, "board/" + image.name);
+      const uploadStorage = ref(storage, "board/" + image.name+"_"+this.timestamp);
       uploadBytes(uploadStorage, image)
         .then(() => {
           console.log("Uploaded a blob or file!");
@@ -112,7 +145,7 @@ export default {
     //이미지 링크를 다운로드하고 태그 삽입
     createImg(image) {
       //그 링크를 저장
-      getDownloadURL(ref(storage, "board/" + image.name))
+      getDownloadURL(ref(storage, "board/" + image.name+"_"+this.timestamp))
         .then((url) => {
           this.makeHtmlImg(url);
         })
@@ -126,6 +159,11 @@ export default {
       let new_pTag = document.createElement("img");
       new_pTag.setAttribute("src", url);
       tagArea.appendChild(new_pTag);
+
+      //처음으로 추가한 이미지면 그 이미지를 썸네일로
+      if (this.thumbnail == "") {
+        this.thumbnail = url;
+      }
     },
   },
 };
