@@ -4,6 +4,8 @@ const reviewStore = {
     state: {
       reviewList: [],
       selectIdx:null,
+      info:[],
+      isUpdate:false
       
     },
     getters: {},
@@ -13,7 +15,14 @@ const reviewStore = {
       },
       SET_SELECT_IDX(state,index){
         state.selectIdx=index;
+      },
+      SET_UPDATE_INFO(state,info){
+        state.info=info;
+      },
+      SET_IS_UPDATE(state,isUpdate){
+        state.isUpdate=isUpdate
       }
+      
       
     },
     actions: {
