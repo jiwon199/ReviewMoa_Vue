@@ -23,6 +23,7 @@
       contentEditable="true"
       placeholder="내용을 입력하세요."
       id="content"
+      v-html=content
     ></div>
 
     <b-button
@@ -57,7 +58,9 @@
 <script>
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { initializeApp } from "firebase/app";
+import { mapState,mapMutations } from "vuex";
 import axios from "axios"
+const reviewStore = "reviewStore";
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
   authDomain: process.env.VUE_APP_AUTH_DOMAIN,
@@ -70,45 +73,74 @@ initializeApp(firebaseConfig);
 const storage = getStorage();
 export default {
   name: "ReviewWrite",
-
+  computed: {
+    ...mapState(reviewStore, ["reviewList"]),
+    ...mapState(reviewStore, ["selectIdx"]),
+    ...mapState(reviewStore, ["isUpdate"]),
+  },
   data() {
     return {
       postTitle: "",
       movieTitle: "",
       genre: "",
+      content:"",
       thumbnail: "",
       genres: ["sf", "판타지", "로맨스"],
-      timestamp:""
+      timestamp:"",
+      postId:"",
     };
   },
-
+  created(){
+     this.init();
+  },
   methods: {
+    ...mapMutations(reviewStore,["SET_IS_UPDATE"]),
+    init(){
+      //만약 수정중이면 정보를 가져와서 세팅
+      if(this.isUpdate==true){
+        this.postId=this.reviewList[this.selectIdx].postId;
+        this.postTitle= this.reviewList[this.selectIdx].postTitle;
+        this.movieTitle= this.reviewList[this.selectIdx].movieTitle;
+        this.genre= this.reviewList[this.selectIdx].genre;
+        this.content=this.reviewList[this.selectIdx].content;
+        this.SET_IS_UPDATE(false); //수정중을 false로 돌려놓기
+      }
+    },
     submit() {
-      var content = document.getElementById("content").innerHTML;
-      if (this.isValid(content)) {
+      this.content = document.getElementById("content").innerHTML;
+      if (this.isValid()) {
+        this.selectThumbnail();
         //썸네일이 없으면 기본 썸네일로 설정
         if (this.thumbnail == "") {
           this.thumbnail =
             "https://firebasestorage.googleapis.com/v0/b/test-f7f1d.appspot.com/o/board%2F%EB%AF%B8%EB%A6%AC%EB%B3%B4%EA%B8%B0.png?alt=media&token=34f2ccf3-5eac-4af5-87fc-3c8653c12b92";
+        }  
+        //글쓰기인 경우
+        if(this.postId==""){
+          this.addPost();
         }
-        this.addPost(content);
+        //수정쓰기인 경우
+        else{
+          this.updatePost();
+        }
+         
       } else {
         alert("모든 정보를 입력하세요.");
       }
     },
     //모든 칸이 채워졌는지 확인
-    isValid(content) {
+    isValid() {
       if (
         this.postTitle == "" ||
         this.movieTitle == "" ||
         this.genre == "" ||
-        content == ""
+        this.content == ""
       ) {
         return false;
       }
       return true;
     },
-    addPost(content) {
+    addPost() {
       axios({
         method: "post",
         url: process.env.VUE_APP_ROOT_URL + "/board/write",
@@ -120,7 +152,7 @@ export default {
           postTitle: this.postTitle,
           thumbnail: this.thumbnail,
           heart: 0,
-          content: content,
+          content: this.content,
         },
       }).then(() => {
         //alert("포스트를 작성했습니다.");
@@ -160,11 +192,34 @@ export default {
       new_pTag.setAttribute("src", url);
       tagArea.appendChild(new_pTag);
 
-      //처음으로 추가한 이미지면 그 이미지를 썸네일로
-      if (this.thumbnail == "") {
-        this.thumbnail = url;
+    },
+    //가장 처음 오는 img를 썸네일로
+    selectThumbnail(){
+      var imgElements = document.getElementsByTagName('img');
+      if(imgElements.length>=1){
+        this.thumbnail=imgElements[0].src;
       }
     },
+    updatePost(){
+      axios({
+        method: "post",
+        url: process.env.VUE_APP_ROOT_URL + "/board/write",
+        data: {
+          postId:this.postId,
+          writer: "익명",
+          hit: 0,
+          genre: this.genre,
+          movieTitle: this.movieTitle,
+          postTitle: this.postTitle,
+          thumbnail: this.thumbnail,
+          heart: 0,
+          content: this.content,
+        },
+      }).then(() => {
+        //alert("포스트를 작성했습니다.");
+        this.$router.push('/');
+      });
+    }
   },
 };
 </script>

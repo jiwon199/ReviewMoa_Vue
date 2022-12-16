@@ -10,7 +10,7 @@
    
     <!-- 유저가 완성되면 수정 -->
     <button class="optBtn"  @click="deletePost">삭제</button>
-    <button class="optBtn" >수정</button>
+    <button class="optBtn" @click="updatePost">수정</button>
       
    </div>
 
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState,mapMutations } from "vuex";
 import axios from "axios";
 const reviewStore = "reviewStore";
 export default {
@@ -31,6 +31,7 @@ export default {
     ...mapState(reviewStore, ["selectIdx"]),
   },
   methods:{
+     ...mapMutations(reviewStore,["SET_IS_UPDATE"]),
      deletePost(){
       axios({
         method: "post",
@@ -40,7 +41,13 @@ export default {
         //alert("포스트를 작성했습니다.");
         this.$router.push('/');
       });
+     },
+     updatePost(){
+        //상태를 수정중으로 바꿔놓고 쓰기 페이지로 이동
+        this.SET_IS_UPDATE(true);
+        this.$router.push('/write');
      }
+
   }
 }
 </script>
