@@ -4,6 +4,9 @@
      
     <div class="postTitle">{{reviewList[selectIdx].postTitle}}</div>
     <div class="movieTitle">영화 이름:{{reviewList[selectIdx].movieTitle}}</div>
+    <div class="tag" v-for="(item, index) in tagList" :key="index" :item="item"  >
+      <b-badge variant="secondary" >{{item.content}} </b-badge>
+    </div><br/>
     <div class="writer">
     작성자:{{reviewList[selectIdx].writer}},
     {{reviewList[selectIdx].registTime}}</div>
@@ -26,9 +29,18 @@ import axios from "axios";
 const reviewStore = "reviewStore";
 export default {
   name: 'ReviewItem',
+   data() {
+    return {
+      tagList:[]
+    };
+  },
    computed: {
     ...mapState(reviewStore, ["reviewList"]),
     ...mapState(reviewStore, ["selectIdx"]),
+  },
+  created(){
+    this.updateHit();
+    this.tagList=this.reviewList[this.selectIdx].tagList;
   },
   methods:{
      ...mapMutations(reviewStore,["SET_IS_UPDATE"]),
@@ -46,6 +58,13 @@ export default {
         //상태를 수정중으로 바꿔놓고 쓰기 페이지로 이동
         this.SET_IS_UPDATE(true);
         this.$router.push('/write');
+     },
+     updateHit(){
+      axios({
+        method: "post",
+        url: process.env.VUE_APP_ROOT_URL + "/board/updateHit/"+this.reviewList[this.selectIdx].postId,
+        
+      }) 
      }
 
   }
@@ -73,6 +92,10 @@ export default {
 .writer{
     font-size:1em; 
     display: inline;
+}
+.tag{
+  display: inline;
+  margin-left: 2px;
 }
 .contentArea{
     margin: 5px;
