@@ -13,9 +13,17 @@
     ></b-form-input>
     <b-form-select v-model="genre" :options="genres" id="genreInput">
       <b-form-select-option value="" disabled selected hidden>
-        <span style="color: yellow">장르를 선택하세요.</span>
+        <span>장르를 선택하세요.</span>
       </b-form-select-option>
     </b-form-select>
+
+    <b-form-tags
+      input-id="tags-basic"
+      v-model="tagList"
+      placeholder="영화 키워드를 입력하세요.(3개 이하)"
+      :limit="limit"
+    >
+    </b-form-tags>
 
     <!-- 컨텐츠-->
     <div
@@ -23,7 +31,7 @@
       contentEditable="true"
       placeholder="내용을 입력하세요."
       id="content"
-      v-html=content
+      v-html="content"
     ></div>
 
     <b-button
@@ -58,8 +66,8 @@
 <script>
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { initializeApp } from "firebase/app";
-import { mapState,mapMutations } from "vuex";
-import axios from "axios"
+import { mapState, mapMutations } from "vuex";
+import axios from "axios";
 const reviewStore = "reviewStore";
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
@@ -83,27 +91,35 @@ export default {
       postTitle: "",
       movieTitle: "",
       genre: "",
-      content:"",
+      content: "",
       thumbnail: "",
       genres: ["sf", "판타지", "로맨스"],
-      timestamp:"",
-      postId:"",
+      timestamp: "",
+      postId: "",
+      tagList: [],
+      limit: 3,
     };
   },
-  created(){
-     this.init();
+  created() {
+    this.init();
   },
   methods: {
-    ...mapMutations(reviewStore,["SET_IS_UPDATE"]),
-    init(){
+    ...mapMutations(reviewStore, ["SET_IS_UPDATE"]),
+    init() {
       //만약 수정중이면 정보를 가져와서 세팅
-      if(this.isUpdate==true){
-        this.postId=this.reviewList[this.selectIdx].postId;
-        this.postTitle= this.reviewList[this.selectIdx].postTitle;
-        this.movieTitle= this.reviewList[this.selectIdx].movieTitle;
-        this.genre= this.reviewList[this.selectIdx].genre;
-        this.content=this.reviewList[this.selectIdx].content;
+      if (this.isUpdate == true) {
+        this.postId = this.reviewList[this.selectIdx].postId;
+        this.postTitle = this.reviewList[this.selectIdx].postTitle;
+        this.movieTitle = this.reviewList[this.selectIdx].movieTitle;
+        this.genre = this.reviewList[this.selectIdx].genre;
+        this.content = this.reviewList[this.selectIdx].content;
+        this.initTagList();
         this.SET_IS_UPDATE(false); //수정중을 false로 돌려놓기
+      }
+    },
+    initTagList(){
+      for(var i=0;i<this.reviewList[this.selectIdx].tagList.length;i++){
+        this.tagList.push(this.reviewList[this.selectIdx].tagList[i].content);
       }
     },
     submit() {
@@ -114,16 +130,15 @@ export default {
         if (this.thumbnail == "") {
           this.thumbnail =
             "https://firebasestorage.googleapis.com/v0/b/test-f7f1d.appspot.com/o/board%2F%EB%AF%B8%EB%A6%AC%EB%B3%B4%EA%B8%B0.png?alt=media&token=34f2ccf3-5eac-4af5-87fc-3c8653c12b92";
-        }  
+        }
         //글쓰기인 경우
-        if(this.postId==""){
+        if (this.postId == "") {
           this.addPost();
         }
         //수정쓰기인 경우
-        else{
+        else {
           this.updatePost();
         }
-         
       } else {
         alert("모든 정보를 입력하세요.");
       }
@@ -141,6 +156,7 @@ export default {
       return true;
     },
     addPost() {
+      var tagList=this.makeTagListFormat();
       axios({
         method: "post",
         url: process.env.VUE_APP_ROOT_URL + "/board/write",
@@ -153,18 +169,22 @@ export default {
           thumbnail: this.thumbnail,
           heart: 0,
           content: this.content,
+          tagList: tagList
         },
       }).then(() => {
         //alert("포스트를 작성했습니다.");
-        this.$router.push('/');
+        this.$router.push("/");
       });
     },
 
     //파이어베이스 스토리지에 이미지를 업로드
     uploadImg() {
-      this.timestamp=new Date();
+      this.timestamp = new Date();
       var image = this.$refs["image"].files[0];
-      const uploadStorage = ref(storage, "board/" + image.name+"_"+this.timestamp);
+      const uploadStorage = ref(
+        storage,
+        "board/" + image.name + "_" + this.timestamp
+      );
       uploadBytes(uploadStorage, image)
         .then(() => {
           console.log("Uploaded a blob or file!");
@@ -177,7 +197,7 @@ export default {
     //이미지 링크를 다운로드하고 태그 삽입
     createImg(image) {
       //그 링크를 저장
-      getDownloadURL(ref(storage, "board/" + image.name+"_"+this.timestamp))
+      getDownloadURL(ref(storage, "board/" + image.name + "_" + this.timestamp))
         .then((url) => {
           this.makeHtmlImg(url);
         })
@@ -191,21 +211,21 @@ export default {
       let new_pTag = document.createElement("img");
       new_pTag.setAttribute("src", url);
       tagArea.appendChild(new_pTag);
-
     },
     //가장 처음 오는 img를 썸네일로
-    selectThumbnail(){
-      var imgElements = document.getElementsByTagName('img');
-      if(imgElements.length>=1){
-        this.thumbnail=imgElements[0].src;
+    selectThumbnail() {
+      var imgElements = document.getElementsByTagName("img");
+      if (imgElements.length >= 1) {
+        this.thumbnail = imgElements[0].src;
       }
     },
-    updatePost(){
+    updatePost() {
+      var tagList=this.makeTagListFormat();
       axios({
         method: "post",
-        url: process.env.VUE_APP_ROOT_URL + "/board/write",
+        url: process.env.VUE_APP_ROOT_URL + "/board/update",
         data: {
-          postId:this.postId,
+          postId: this.postId,
           writer: "익명",
           hit: 0,
           genre: this.genre,
@@ -214,11 +234,22 @@ export default {
           thumbnail: this.thumbnail,
           heart: 0,
           content: this.content,
+          tagList:tagList
         },
       }).then(() => {
         //alert("포스트를 작성했습니다.");
-        this.$router.push('/');
+        this.$router.push("/");
       });
+    },
+    makeTagListFormat(){
+      var list=[];
+      for(var i=0;i<this.tagList.length;i++){
+         var item={
+          content:this.tagList[i]
+         }
+         list.push(item);
+      }
+      return list;
     }
   },
 };
