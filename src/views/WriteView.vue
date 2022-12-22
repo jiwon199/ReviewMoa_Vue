@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-     여기는 리뷰 쓰기 페이지입니다.
+     
      <review-write/>
   </div>
 </template>

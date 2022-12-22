@@ -1,7 +1,6 @@
 <template>
   <div class="home">
-    리뷰 목록
-     
+    
     <b-card-group  class="listBox"> 
       <div v-for="(item, index) in reviewList" :key="index" :item="item"> 
       <review-item :itemIdx = "index"  class="item"  />  
@@ -35,9 +34,9 @@ export default {
     ...mapMutations(reviewStore,["SET_SELECT_IDX"]),
     getList() {
       axios
-        .get(process.env.VUE_APP_ROOT_URL+"/board/list")
+        .get(process.env.VUE_APP_ROOT_URL+"/board/list?page=0&sort=postId,desc&genre=모든 장르")
         .then((response) => {
-          this.reviewList=response.data;
+          this.reviewList=response.data.content;
           this.SET_REVIEW_LIST(this.reviewList);
            
         })
