@@ -1,16 +1,19 @@
 <template>
   <div class="home">
-     여기는 리뷰 보기(=메인페이지)입니다
+    <review-search/>
      <review-list/>
+      
   </div>
 </template>
 
 <script>
 import ReviewList from '@/components/review/ReviewList.vue'
+import ReviewSearch from '@/components/review/ReviewSearch.vue'
 export default {
   name: 'HomeView',
   components: {
-    ReviewList
+    ReviewList,
+    ReviewSearch
   }
 }
 </script>

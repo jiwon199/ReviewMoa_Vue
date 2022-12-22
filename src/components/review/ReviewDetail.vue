@@ -5,7 +5,7 @@
     <div class="postTitle">{{reviewList[selectIdx].postTitle}}</div>
     <div class="movieTitle">영화 이름:{{reviewList[selectIdx].movieTitle}}</div>
     <div class="tag" v-for="(item, index) in tagList" :key="index" :item="item"  >
-      <b-badge variant="secondary" >{{item.content}} </b-badge>
+      <b-badge variant="secondary" id="badge">{{item.content}} </b-badge>
     </div><br/>
     <div class="writer">
     작성자:{{reviewList[selectIdx].writer}},
@@ -124,5 +124,11 @@ export default {
 }
 .optBtn:hover{
   color:gray;
+}
+#badge{
+  padding:5px;
+  font-size: 13px;
+  font-style:normal;
+  background: sandybrown; 
 }
 </style>
