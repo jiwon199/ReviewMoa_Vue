@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import reviewStore from "@/store/modules/reviewStore";
+import memberStore from "@/store/modules/memberStore";
 
 // 데이터 유지를 위해 import
 import createPersistedState from 'vuex-persistedstate';
@@ -16,7 +17,7 @@ export default new Vuex.Store({
   actions: {
   },
   
-  modules: {reviewStore},
+  modules: {reviewStore, memberStore},
   plugins: [ 
     createPersistedState({
       paths: ["reviewStore"]
