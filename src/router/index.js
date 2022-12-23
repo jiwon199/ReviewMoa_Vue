@@ -6,6 +6,7 @@ import UpdateView from '../views/UpdateView.vue'
 import DetailView from '../views/DetailView.vue'
 import AppUser from '../views/AppUser.vue'
 import UserRegist from '../components/user/UserRegist'
+import UserLogin from '../components/user/UserLogin'
 Vue.use(VueRouter)
 
 const routes = [
@@ -39,6 +40,11 @@ const routes = [
         name: 'regist',
         component: UserRegist,
       },
+      {
+        path: 'login',
+        name: 'login',
+        component:UserLogin,
+      }
     ],
   },
 ];
@@ -50,3 +56,4 @@ const router = new VueRouter({
 });
 
 export default router;
+
