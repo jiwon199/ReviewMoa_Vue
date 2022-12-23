@@ -5,7 +5,9 @@ const reviewStore = {
       reviewList: [],
       selectIdx:null,
       info:[],
-      isUpdate:false
+      isUpdate:false,
+      sort:"postId",
+      genre:"모든 장르"
       
     },
     getters: {},
@@ -21,7 +23,13 @@ const reviewStore = {
       },
       SET_IS_UPDATE(state,isUpdate){
         state.isUpdate=isUpdate
-      }
+      },
+      SET_SORT(state,sort){
+        state.sort=sort;
+      },
+      SET_GENRE(state,genre){
+        state.genre=genre;
+      },
       
       
     },
