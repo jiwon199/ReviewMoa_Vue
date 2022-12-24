@@ -11,7 +11,6 @@
                 v-model="user.userId"
                 required
                 placeholder="id 입력"
-                @blur="checkDuplication"
               ></b-form-input>
             </b-form-group>
             <b-form-group label="비밀번호 : " label-for="userPwd">
@@ -50,10 +49,10 @@ export default {
     },
     methods:{
         ...mapActions(memberStore,["userConfirm","getUserInfo"]),
-        sigin(){
+        signin(){
             this.userConfirm(this.user);
             if(this.isLogin){
-                this.$router.push({name:"home"});
+              this.$router.push({name:"home"});
             }
         },
         signup(){
