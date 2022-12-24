@@ -1,3 +1,4 @@
+import axios from "axios";
 
 const memberStore = {
     namespaced: true,
@@ -23,39 +24,34 @@ const memberStore = {
             state.userInfo = userInfo;
         },
     },
-    // actions: {
-    //     async userConfirm({ commit }, user) {
-    //         await login(
-    //             user,
-    //             ({ data }) => {
-    //                 if (data.message === "success") {
-    //                     commit("SET_IS_LOGIN", true);
-    //                     commit("SET_IS_LOGIN_ERROR", false);
-    //                     commit("SET_USER_INFO", data.userInfo);
-    //                 } else {
-    //                     commit("SET_IS_LOGIN", false);
-    //                     commit("SET_IS_LOGIN_ERROR", true);
-    //                 }
-    //             },
-    //             (error) => {
-    //                 console.log(error);
-    //             }
-    //         );
-    //     },
-    //     async userLogout({ commit }, userid) {
-    //         await logout(
-    //             userid,
-    //             ({ data }) => {
-    //                 if (data.message === "success") {
-    //                     commit("SET_IS_LOGIN", false);
-    //                     commit("SET_USER_INFO", null);
-    //                 }
-    //             },
-    //             (error) => {
-    //                 console.log(error);
-    //             }
-    //         )
-    //     }
-    // }
+    actions: {
+        async userConfirm({ commit }, user) {
+            axios.post(process.env.VUE_APP_ROOT_URL + "/user/login", JSON.stringify(user))
+                .then(({ data }) => {
+                    if (data.message === "success") {
+                        commit("SET_IS_LOGIN", true);
+                        commit("SET_IS_LOGIN_ERROR", false);
+                        commit("SET_USER_INFO", data.userInfo);
+                    } else {
+                        commit("SET_IS_LOGIN", false);
+                        commit("SET_IS_LOGIN_ERROR", true);
+                    }
+                }).catch((error) => {
+                    console.log(error);
+                });
+        },
+        async userLogout({ commit }, userid) {
+            axios.get(process.env.VUE_APP_ROOT_URL + "/user/logout/" + userid)
+                .then(({data})=> {
+                    if (data.message === "success") {
+                        commit("SET_IS_LOGIN", false);
+                        commit("SET_USER_INFO", null);
+                    }
+                }).catch((error) => {
+                    console.log(error);
+                });
+            
+        }
+    }
 }
 export default memberStore;
