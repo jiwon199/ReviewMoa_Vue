@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+     
     <b-card-group class="listBox">
       <div v-for="(item, index) in reviewList" :key="index" :item="item">
         <review-item :itemIdx="index" class="item" />
@@ -32,30 +33,38 @@ export default {
   },
   computed: {
     ...mapState(reviewStore, ["sort"]),
+    ...mapState(reviewStore, ["genre"]),
+    ...mapState(reviewStore, ["searchWord"]),
+ 
   },
   watch: {
     sort() {
-      this.page=0;
-      const target = document.getElementById('moreBtn');
-      target.disabled = false;
-      this.getList();
+     this.init();
     },
+    genre(){
+      this.init();
+    },
+    searchWord(){
+      this.init();
+    }
   },
   methods: {
     ...mapMutations(reviewStore, ["SET_REVIEW_LIST"]),
     ...mapMutations(reviewStore, ["SET_SELECT_IDX"]),
     getList() {
+      console.log("searchWord:"+this.searchWord);
       axios
         .get(
           process.env.VUE_APP_ROOT_URL +
             "/board/list?page="+this.page+"&sort=" +
             this.sort +
-            ",desc&genre=모든 장르&search="
+            ",desc&genre="+this.genre+"&search="+this.searchWord 
         )
         .then((response) => {
           this.reviewList = response.data.content;
           this.SET_REVIEW_LIST(this.reviewList);
           this.setMoreBtn(response.data.last);
+           
         })
         .catch((error) => {
           console.dir(error);
@@ -83,6 +92,12 @@ export default {
           console.dir(error);
         });
        
+    },
+    init(){
+      this.page=0;
+      const target = document.getElementById('moreBtn');
+      target.disabled = false;
+      this.getList();
     },
     setMoreBtn(last){
        

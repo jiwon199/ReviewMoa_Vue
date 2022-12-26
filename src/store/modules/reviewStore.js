@@ -7,7 +7,9 @@ const reviewStore = {
       info:[],
       isUpdate:false,
       sort:"postId",
-      genre:"모든 장르"
+      genre:"모든 장르",
+      searchWord:""
+
       
     },
     getters: {},
@@ -30,6 +32,9 @@ const reviewStore = {
       SET_GENRE(state,genre){
         state.genre=genre;
       },
+      SET_SEARCH(state,searchWord){
+        state.searchWord=searchWord;
+      }
       
       
     },
