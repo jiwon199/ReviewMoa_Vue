@@ -8,7 +8,7 @@
               <b-form-input
                 id="userId"
                 type="text"
-                v-model="user.userId"
+                v-model="user.realId"
                 required
                 placeholder="id 입력"
               ></b-form-input>
@@ -39,8 +39,8 @@ export default {
     data(){
         return{
             user:{
-                userid:null,
-                userpwd:null,
+                realId:null,
+                userPwd:null,
             },
         };
     },
@@ -50,6 +50,7 @@ export default {
     methods:{
         ...mapActions(memberStore,["userConfirm","getUserInfo"]),
         signin(){
+            console.log(JSON.stringify(this.user));
             this.userConfirm(this.user);
             if(this.isLogin){
               this.$router.push({name:"home"});
