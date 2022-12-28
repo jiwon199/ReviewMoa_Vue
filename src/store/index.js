@@ -20,7 +20,7 @@ export default new Vuex.Store({
   modules: {reviewStore, memberStore},
   plugins: [ 
     createPersistedState({
-      paths: ["reviewStore"]
+      paths: ["reviewStore","memberStore"]
     })
   ],
 })

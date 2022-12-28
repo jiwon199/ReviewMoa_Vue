@@ -4,15 +4,55 @@
       <li><router-link to="/" class="link" id="logo">리뷰 모아</router-link></li>
       <li><router-link to="/" class="link">리뷰 보기</router-link></li>
       <li><router-link to="/write" class="link">리뷰 쓰기</router-link></li>
-      <li><router-link :to="{name:'regist'}" class="link">회원 가입</router-link></li> 
-      <!-- <li><router-link to="" class="link">로그인</router-link></li> -->
+      <div v-if="userInfo">
+        <li style="display:inline-block">{{userInfo.realId}}님 환영합니다.</li>
+        <li style="display:inline-block" @click.prevent="onClickLogout">로그아웃</li>         
+      </div>
+      <div v-else>
+        <li style="display:inline-block"><router-link :to="{name:'regist'}" class="link">회원 가입</router-link></li> 
+        <li style="display:inline-block"><router-link :to="{name:'login'}" class="link">로그인</router-link></li>
+      </div>
+      
     </ul>
   </nav>
 </template>
 
 <script>
+import {mapState,mapGetters, mapActions,mapMutations} from "vuex";
+const memberStore="memberStore";
 export default {
   name: "HeaderNavBar",
+  data(){
+    return {};
+  },
+  computed:{
+    ...mapState(memberStore,["isLogin","userInfo"]),
+    ...mapGetters(["checkUserInfo"]),
+  },
+  created(){
+	console.log("환영합니다 ",this.userInfo);
+  },
+  watch: {
+    userInfo() {
+      console.log("환영합니다 ",this.userInfo.realId);
+      // console.log("바로 읽기",this.$memberStore.state.userInfo.realId);
+    },
+    
+  },
+  methods:{
+    ...mapActions(memberStore,["userLogout"]),
+    ...mapMutations(memberStore, ["SET_IS_LOGIN"]),
+...mapMutations(memberStore, ["SET_USER_INFO"]),
+    onClickLogout(){
+      console.log(this.userInfo);
+      this.SET_IS_LOGIN(false)
+			this.SET_USER_INFO("");
+
+      // this.userLogout(this.userInfo.realId);
+      if(this.$route.name!="home") 
+      this.$router.push({name:"home"});
+    }
+  }
 };
 </script>
 <style>
