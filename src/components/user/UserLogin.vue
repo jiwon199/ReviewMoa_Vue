@@ -1,3 +1,5 @@
+//UserLogin.Vue
+
 <template>
     <b-container>
     <b-row class="my-1">
@@ -31,9 +33,9 @@
   </b-container>
 </template>
 <script>
-import {mapState, mapActions} from "vuex";
+import {mapState, mapMutations} from "vuex";
 const memberStore = "memberStore";
-
+import axios from "axios";
 export default {
     name:"UserLogin",
     data(){
@@ -48,13 +50,29 @@ export default {
         ...mapState(memberStore,["isLogin","isLoginError","userInfo"]),
     },
     methods:{
-        ...mapActions(memberStore,["userConfirm","getUserInfo"]),
+        //...mapActions(memberStore,["userConfirm","getUserInfo"]),
+		...mapMutations(memberStore, ["SET_IS_LOGIN"]),
+...mapMutations(memberStore, ["SET_USER_INFO"]),
+    
         signin(){
             console.log(JSON.stringify(this.user));
-            this.userConfirm(this.user);
-            if(this.isLogin){
-              this.$router.push({name:"home"});
-            }
+            axios
+        .post(process.env.VUE_APP_ROOT_URL + "/user/login", JSON.stringify(this.user), {
+          headers: {
+            "Content-Type": `application/json`,
+          },
+        })
+        .then((data ) => {
+            this.SET_IS_LOGIN(true)
+						this.SET_USER_INFO(data.data);
+            console.log(data.data.realId);
+            this.$router.push({name:"home"});
+
+          }
+        )
+        .catch((error) => {
+          console.log(error);
+        });
         },
         signup(){
             this.$router.push({name:"regist"});
