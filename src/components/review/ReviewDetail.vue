@@ -11,10 +11,10 @@
     작성자:{{reviewList[selectIdx].writer}},
     {{reviewList[selectIdx].registTime}}</div>
    
-    <!-- 유저가 완성되면 수정 -->
+     <div v-if="userInfo.realId==reviewList[selectIdx].writer">
     <button class="optBtn"  @click="deletePost">삭제</button>
     <button class="optBtn" @click="updatePost">수정</button>
-      
+      </div>
    </div>
 
   <div class="contentArea">
@@ -27,6 +27,7 @@
 import { mapState,mapMutations } from "vuex";
 import axios from "axios";
 const reviewStore = "reviewStore";
+const memberStore="memberStore";
 export default {
   name: 'ReviewItem',
    data() {
@@ -37,6 +38,7 @@ export default {
    computed: {
     ...mapState(reviewStore, ["reviewList"]),
     ...mapState(reviewStore, ["selectIdx"]),
+    ...mapState(memberStore,["userInfo"])
   },
   created(){
     this.updateHit();
