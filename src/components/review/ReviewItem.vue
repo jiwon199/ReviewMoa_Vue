@@ -13,7 +13,7 @@
   >
       
     <b-card-body class="cardBody">
-      <b-card-title style="font-family: 'BMJUA'; margin:0px;">{{ postTitle}}</b-card-title> <!-- 포스트 제목 -->
+      <b-card-title style="font-family: 'BMJUA'; margin:0px;">{{postTitle}}</b-card-title> <!-- 포스트 제목 -->
 
 <div v-if="tagList.length>=1"> 
     <div class="tag" v-for="(item, index) in tagList" :key="index" :item="item"  >
@@ -50,6 +50,12 @@ export default {
     ...mapState(reviewStore, ["reviewList"]),
     
   },
+  watch: {
+    reviewList() {
+     this.makeShortTitle();
+    this.tagList=this.reviewList[this.itemIdx].tagList;
+    },
+  },
   created(){
     this.makeShortTitle();
     this.tagList=this.reviewList[this.itemIdx].tagList;
@@ -66,7 +72,7 @@ export default {
       if(this.postTitle.length>=13){
         this.postTitle=this.postTitle.slice(0,12);
         this.postTitle+="..";
-        console.log(this.postTitle);
+        //console.log(this.postTitle);
       }
     }
   }

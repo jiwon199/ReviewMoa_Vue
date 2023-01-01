@@ -69,6 +69,7 @@ import { initializeApp } from "firebase/app";
 import { mapState, mapMutations } from "vuex";
 import axios from "axios";
 const reviewStore = "reviewStore";
+const memberStore="memberStore";
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
   authDomain: process.env.VUE_APP_AUTH_DOMAIN,
@@ -85,6 +86,9 @@ export default {
     ...mapState(reviewStore, ["reviewList"]),
     ...mapState(reviewStore, ["selectIdx"]),
     ...mapState(reviewStore, ["isUpdate"]),
+    ...mapState(memberStore,["userInfo"])
+
+     
   },
   data() {
     return {
@@ -93,15 +97,21 @@ export default {
       genre: "",
       content: "",
       thumbnail: "",
-      genres: ["sf", "판타지", "로맨스"],
+      genres: ["SF", "판타지", "로맨스","누아르","공포","코미디","애니메이션"],
       timestamp: "",
       postId: "",
       tagList: [],
       limit: 3,
+      writer:"익명"
     };
   },
   created() {
     this.init();
+    if(this.userInfo!="") this.writer=this.userInfo.realId;
+    else{
+      alert("로그인을 먼저 해주세요");
+      this.$router.push("/");
+    }
   },
   methods: {
     ...mapMutations(reviewStore, ["SET_IS_UPDATE"]),
@@ -161,7 +171,7 @@ export default {
         method: "post",
         url: process.env.VUE_APP_ROOT_URL + "/board/write",
         data: {
-          writer: "익명",
+          writer: this.writer,
           hit: 0,
           genre: this.genre,
           movieTitle: this.movieTitle,
