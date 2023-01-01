@@ -55,18 +55,23 @@ export default {
       this.$router.push({name:"home"});
     },
     onClickDelete(){
-      console.log(this.userInfo.realId);
-      const id = this.userInfo.realId;
+onClickDelete(){
+      console.log(this.userInfo.userId);
+      const id = this.userInfo.userId;
       axios({
         method:"post",
-        url:process.env.VUE_APP_ROOT_URL+"/user/delete",
-        data:{
-          
-        }        
+        url:process.env.VUE_APP_ROOT_URL+"/user/delete/"+id
       }).then(()=>{
         console.log("회원탈퇴 완료");
          this.SET_IS_LOGIN(false);
-			this.SET_USER_INFO("");
+				this.SET_USER_INFO("");
+
+      // this.userLogout(this.userInfo.realId);
+      if(this.$route.name!="home") 
+      this.$router.push({name:"home"});
+      })
+     
+    }
 
       // this.userLogout(this.userInfo.realId);
       if(this.$route.name!="home") 
