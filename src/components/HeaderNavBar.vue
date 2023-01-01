@@ -55,6 +55,7 @@ export default {
       this.$router.push({name:"home"});
     },
     onClickDelete(){
+onClickDelete(){
       console.log(this.userInfo.userId);
       const id = this.userInfo.userId;
       axios({
@@ -64,6 +65,13 @@ export default {
         console.log("회원탈퇴 완료");
          this.SET_IS_LOGIN(false);
 				this.SET_USER_INFO("");
+
+      // this.userLogout(this.userInfo.realId);
+      if(this.$route.name!="home") 
+      this.$router.push({name:"home"});
+      })
+     
+    }
 
       // this.userLogout(this.userInfo.realId);
       if(this.$route.name!="home") 
