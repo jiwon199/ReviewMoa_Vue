@@ -6,7 +6,8 @@
       <li><router-link to="/write" class="link">리뷰 쓰기</router-link></li>
       <div v-if="userInfo">
         <li style="display:inline-block">{{userInfo.realId}}님 환영합니다.</li>
-        <li style="display:inline-block" @click.prevent="onClickLogout">로그아웃</li>         
+        <li style="display:inline-block" @click.prevent="onClickLogout" class="link">로그아웃 </li>
+        <li style="display:inline-block" @click.prevent="onClickDelete" class="link"> 회원 탈퇴</li>         
       </div>
       <div v-else>
         <li style="display:inline-block"><router-link :to="{name:'regist'}" class="link">회원 가입</router-link></li> 
@@ -19,6 +20,7 @@
 
 <script>
 import {mapState,mapGetters, mapActions,mapMutations} from "vuex";
+import axios from "axios";
 const memberStore="memberStore";
 export default {
   name: "HeaderNavBar",
@@ -51,6 +53,26 @@ export default {
       // this.userLogout(this.userInfo.realId);
       if(this.$route.name!="home") 
       this.$router.push({name:"home"});
+    },
+    onClickDelete(){
+      console.log(this.userInfo.realId);
+      const id = this.userInfo.realId;
+      axios({
+        method:"post",
+        url:process.env.VUE_APP_ROOT_URL+"/user/delete",
+        data:{
+          
+        }        
+      }).then(()=>{
+        console.log("회원탈퇴 완료");
+         this.SET_IS_LOGIN(false);
+			this.SET_USER_INFO("");
+
+      // this.userLogout(this.userInfo.realId);
+      if(this.$route.name!="home") 
+      this.$router.push({name:"home"});
+      })
+     
     }
   }
 };
